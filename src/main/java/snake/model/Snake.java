@@ -12,10 +12,10 @@ public class Snake {
     private Side direction = Side.TOP;
 
     Snake() {
-        points.add(new Point2D(20, 30));
-        points.add(new Point2D(20, 31));
-        points.add(new Point2D(20, 32));
-        points.add(new Point2D(20, 33));
+        points.add(new Point2D(20, 20));
+        points.add(new Point2D(20, 21));
+        points.add(new Point2D(20, 22));
+        points.add(new Point2D(20, 23));
     }
 
     public List<Point2D> getPoints() {

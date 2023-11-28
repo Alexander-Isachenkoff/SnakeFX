@@ -4,16 +4,19 @@ import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 import snake.model.GameModel;
 import snake.model.Snake;
 import snake.ui.FoodNode;
 import snake.ui.SnakeSegmentNode;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,10 +32,13 @@ public class LevelController {
     @FXML
     private Label scoreLabel;
     @FXML
-    private Pane gamePane;
+    private AnchorPane gamePane;
 
     @FXML
     private void initialize() {
+        gamePane.setPrefWidth(GRID_SIZE * gameModel.getWidth());
+        gamePane.setPrefHeight(GRID_SIZE * gameModel.getHeight());
+
         gamePane.sceneProperty().addListener((observable, oldValue, newValue) -> {
             newValue.setOnKeyPressed(event -> {
                 switch (event.getCode()) {
@@ -57,12 +63,42 @@ public class LevelController {
         gameModel.setOnSnakeMove(this::onSnakeMove);
         gameModel.setOnFoodAdded(this::onFoodAdded);
         gameModel.setOnFoodRemoved(this::onFoodRemoved);
+        gameModel.setOnGameOver(this::onGameOver);
 
+        restart();
+    }
+
+    private void restart() {
+        gamePane.getChildren().removeAll(snakeNodes);
+        snakeNodes.clear();
+        gameModel.restart();
         for (Point2D point : gameModel.getSnake().getPoints()) {
             addSnakeSegment(point);
         }
+    }
 
-        gameModel.start();
+    private void onGameOver() {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/game_over.fxml"));
+        Parent load;
+        try {
+            load = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        gamePane.getChildren().add(load);
+        AnchorPane.setTopAnchor(load, 0.0);
+        AnchorPane.setBottomAnchor(load, 0.0);
+        AnchorPane.setLeftAnchor(load, 0.0);
+        AnchorPane.setRightAnchor(load, 0.0);
+
+        GameOverController controller = loader.getController();
+
+        controller.setOnMenu(this::onMenu);
+        controller.setOnRestart(() -> {
+            gamePane.getChildren().remove(load);
+            restart();
+        });
     }
 
     private void addSnakeSegment(Point2D point) {
