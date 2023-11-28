@@ -6,13 +6,13 @@ import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import snake.model.GameModel;
 import snake.model.Snake;
 import snake.ui.FoodNode;
+import snake.ui.SnakeSegmentNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,9 +22,12 @@ import java.util.Map;
 public class LevelController {
 
     private final GameModel gameModel = new GameModel();
-    private final List<Node> snakeNodes = new ArrayList<>();
+    private final List<SnakeSegmentNode> snakeNodes = new ArrayList<>();
     private final Map<Point2D, FoodNode> foodNodes = new HashMap<>();
     private final double GRID_SIZE = 20;
+
+    @FXML
+    private Label scoreLabel;
     @FXML
     private Pane gamePane;
 
@@ -49,6 +52,7 @@ public class LevelController {
             });
         });
 
+        gameModel.scoreProperty().addListener((observable, oldValue, newValue) -> scoreLabel.setText(newValue.toString()));
         gameModel.setOnSegmentAdded(this::addSnakeSegment);
         gameModel.setOnSnakeMove(this::onSnakeMove);
         gameModel.setOnFoodAdded(this::onFoodAdded);
@@ -62,11 +66,11 @@ public class LevelController {
     }
 
     private void addSnakeSegment(Point2D point) {
-        Rectangle circle = new Rectangle(GRID_SIZE, GRID_SIZE, Color.RED);
-        circle.setTranslateX(point.getX() * GRID_SIZE);
-        circle.setTranslateY(point.getY() * GRID_SIZE);
-        gamePane.getChildren().add(circle);
-        snakeNodes.add(circle);
+        SnakeSegmentNode segmentNode = new SnakeSegmentNode(GRID_SIZE);
+        segmentNode.setTranslateX(point.getX() * GRID_SIZE);
+        segmentNode.setTranslateY(point.getY() * GRID_SIZE);
+        gamePane.getChildren().add(segmentNode);
+        snakeNodes.add(segmentNode);
     }
 
     private void onSnakeMove(Snake snake) {

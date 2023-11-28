@@ -1,6 +1,9 @@
 package snake.model;
 
 import javafx.animation.AnimationTimer;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point2D;
 
 import java.util.*;
@@ -16,6 +19,8 @@ public class GameModel {
     private Consumer<Point2D> onSegmentAdded;
     private Consumer<Point2D> onFoodAdded;
     private Consumer<Point2D> onFoodRemoved;
+    private final IntegerProperty score = new SimpleIntegerProperty(-1);
+    private final IntegerProperty record = new SimpleIntegerProperty(-1);
     private long lastUpdateTime;
     private long lastTurnTime;
     private long lastFoodTime;
@@ -32,6 +37,7 @@ public class GameModel {
     }
 
     public void start() {
+        score.set(0);
         new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -57,6 +63,7 @@ public class GameModel {
                 Point2D segment = snake.addSegment();
                 onSegmentAdded.accept(segment);
                 foodSet.remove(food);
+                score.set(score.get() + 1);
                 onFoodRemoved.accept(food);
             }
         }
@@ -99,4 +106,13 @@ public class GameModel {
     public void setOnSegmentAdded(Consumer<Point2D> onSegmentAdded) {
         this.onSegmentAdded = onSegmentAdded;
     }
+
+    public ReadOnlyIntegerProperty scoreProperty() {
+        return score;
+    }
+
+    public ReadOnlyIntegerProperty recordProperty() {
+        return record;
+    }
+
 }
