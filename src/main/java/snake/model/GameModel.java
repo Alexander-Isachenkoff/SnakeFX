@@ -3,9 +3,7 @@ package snake.model;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Point2D;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -13,6 +11,7 @@ public class GameModel {
 
     private final Snake snake = new Snake();
     private final Set<Point2D> foodSet = new HashSet<>();
+    private final Random random = new Random();
     private Consumer<Snake> onSnakeMove;
     private Consumer<Point2D> onSegmentAdded;
     private Consumer<Point2D> onFoodAdded;
@@ -68,10 +67,19 @@ public class GameModel {
     }
 
     private void spawnFood() {
-        Random random = new Random();
-        int x = random.nextInt(width);
-        int y = random.nextInt(height);
-        Point2D food = new Point2D(x, y);
+        List<Point2D> availablePoints = new ArrayList<>();
+        for (int i = 0; i <= width; i++) {
+            for (int j = 0; j <= height; j++) {
+                int x = i;
+                int y = j;
+                if (foodSet.stream().noneMatch(point2D -> point2D.getX() == x && point2D.getY() == y)) {
+                    if (snake.getPoints().stream().noneMatch(point2D -> point2D.getX() == x && point2D.getY() == y)) {
+                        availablePoints.add(new Point2D(x, y));
+                    }
+                }
+            }
+        }
+        Point2D food = availablePoints.get(random.nextInt(availablePoints.size()));
         foodSet.add(food);
         onFoodAdded.accept(food);
     }

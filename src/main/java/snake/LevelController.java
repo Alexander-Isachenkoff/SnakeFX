@@ -8,10 +8,11 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import snake.model.GameModel;
 import snake.model.Snake;
+import snake.ui.FoodNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,8 +23,8 @@ public class LevelController {
 
     private final GameModel gameModel = new GameModel();
     private final List<Node> snakeNodes = new ArrayList<>();
-    private final Map<Point2D, Node> foodNodes = new HashMap<>();
-    private final double GRID_SIZE = 16;
+    private final Map<Point2D, FoodNode> foodNodes = new HashMap<>();
+    private final double GRID_SIZE = 20;
     @FXML
     private Pane gamePane;
 
@@ -61,7 +62,7 @@ public class LevelController {
     }
 
     private void addSnakeSegment(Point2D point) {
-        Circle circle = new Circle(GRID_SIZE / 2, Color.RED);
+        Rectangle circle = new Rectangle(GRID_SIZE, GRID_SIZE, Color.RED);
         circle.setTranslateX(point.getX() * GRID_SIZE);
         circle.setTranslateY(point.getY() * GRID_SIZE);
         gamePane.getChildren().add(circle);
@@ -81,14 +82,14 @@ public class LevelController {
     }
 
     private void onFoodAdded(Point2D foodPoint) {
-        Circle foodCircle = new Circle(GRID_SIZE / 2, Color.LAWNGREEN);
-        foodCircle.setTranslateX(foodPoint.getX() * GRID_SIZE);
-        foodCircle.setTranslateY(foodPoint.getY() * GRID_SIZE);
-        foodCircle.setScaleX(0);
-        foodCircle.setScaleY(0);
-        gamePane.getChildren().add(0, foodCircle);
-        foodNodes.put(foodPoint, foodCircle);
-        ScaleTransition st = new ScaleTransition(Duration.millis(500), foodCircle);
+        FoodNode foodNode = new FoodNode(GRID_SIZE);
+        foodNode.setTranslateX(foodPoint.getX() * GRID_SIZE);
+        foodNode.setTranslateY(foodPoint.getY() * GRID_SIZE);
+        foodNode.setScaleX(0);
+        foodNode.setScaleY(0);
+        gamePane.getChildren().add(0, foodNode);
+        foodNodes.put(foodPoint, foodNode);
+        ScaleTransition st = new ScaleTransition(Duration.millis(500), foodNode);
         st.setToX(1);
         st.setToY(1);
         st.play();
@@ -102,4 +103,10 @@ public class LevelController {
         st.setOnFinished(event -> gamePane.getChildren().remove(node));
         st.play();
     }
+
+    @FXML
+    private void onMenu() {
+
+    }
+
 }

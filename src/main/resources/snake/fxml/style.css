@@ -1,0 +1,43 @@
+.root {
+    -fx-background-color: rgb(30,30,30);
+}
+
+.hud-label .text {
+    -fx-font-smoothing-type: GRAY;
+}
+
+.hud-label .text {
+    -fx-font-size: 18;
+    -fx-font-family: "Trebuchet MS";
+}
+
+.button {
+    -fx-background-insets: 0;
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-color: LIGHTGRAY;
+    -fx-border-width: 1 1 0 1;
+    -fx-border-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, #AAA, 0, 0, 0, 5);
+}
+
+.button .text, .toggle-button .text {
+    -fx-font-size: 18;
+    -fx-font-family: "Trebuchet MS";
+}
+
+.button:hover {
+    -fx-background-color: LIGHTGRAY;
+}
+
+.button:pressed {
+    -fx-effect: none;
+    -fx-translate-y: 5;
+    -fx-border-width: 1;
+}
+
+.game-pane {
+    -fx-background-color: #333;
+    -fx-border-color: black;
+    -fx-border-width: 3;
+}
