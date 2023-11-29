@@ -12,22 +12,23 @@
 }
 
 .button {
+    -fx-cursor: HAND;
     -fx-background-insets: 0;
-    -fx-background-color: white;
+    -fx-background-color: #777;
     -fx-background-radius: 10;
-    -fx-border-color: LIGHTGRAY;
-    -fx-border-width: 1 1 0 1;
     -fx-border-radius: 10;
-    -fx-effect: dropshadow(three-pass-box, #AAA, 0, 0, 0, 5);
+    -fx-effect: dropshadow(three-pass-box, #555, 0, 0, 0, 5);
 }
 
-.button .text, .toggle-button .text {
+.button .text {
     -fx-font-size: 18;
     -fx-font-family: "Trebuchet MS";
+    -fx-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,1), 2, 0, 0, 0);
 }
 
 .button:hover {
-    -fx-background-color: LIGHTGRAY;
+    -fx-background-color: #888;
 }
 
 .button:pressed {
@@ -37,8 +38,38 @@
 }
 
 .game-pane {
-    //-fx-background-color: #333;
     -fx-border-color: black;
     -fx-border-width: 3;
     -fx-border-insets: -3;
+}
+
+.level-cell {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,1), 2, 0, 0, 0);
+}
+
+.level-cell:hover .button {
+    visibility: visible;
+}
+
+.level-button {
+    -fx-effect: none;
+    visibility: hidden;
+    -fx-background-color: rgba(0,0,0,0.15);
+    -fx-background-radius: 0;
+}
+
+.level-button:hover {
+    visibility: visible;
+    -fx-background-color: rgba(0,0,0,0.15);
+}
+
+.level-button:pressed {
+    -fx-translate-y: 0;
+}
+
+.level-title-label .text {
+    -fx-font-smoothing-type: GRAY;
+    -fx-font-size: 18;
+    -fx-font-family: "Trebuchet MS";
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,1), 2, 0, 0, 0);
 }
