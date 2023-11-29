@@ -43,7 +43,7 @@ public class LevelCell extends AnchorPane {
 
     @FXML
     private void onPlay() throws IOException {
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/main.fxml"));
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/level.fxml"));
         Parent load = loader.load();
         LevelController controller = loader.getController();
         controller.initLevel(levelData);

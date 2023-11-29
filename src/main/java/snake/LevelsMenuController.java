@@ -21,4 +21,9 @@ public class LevelsMenuController {
         levelsPane.getChildren().setAll(levelCells);
     }
 
+    @FXML
+    private void onMenu() {
+        Main.toMainMenu();
+    }
+
 }

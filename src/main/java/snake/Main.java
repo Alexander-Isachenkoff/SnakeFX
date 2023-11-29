@@ -20,10 +20,28 @@ public class Main extends Application {
         stage.getScene().setRoot(parent);
     }
 
+    static void toLevels() {
+        loadRoot("fxml/levels.fxml");
+    }
+
+    static void toMainMenu() {
+        loadRoot("fxml/menu.fxml");
+    }
+
+    private static void loadRoot(String fxml) {
+        Parent parent;
+        try {
+            parent = new FXMLLoader(Main.class.getResource(fxml)).load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        setRoot(parent);
+    }
+
     @Override
     public void start(Stage stage) throws IOException {
         Main.stage = stage;
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/levels.fxml"));
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/menu.fxml"));
         Scene scene = new Scene(loader.load());
         stage.setTitle("Snake");
         stage.setScene(scene);

@@ -108,12 +108,7 @@ public class LevelController {
     @FXML
     private void onMenu() {
         gameModel.stop();
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/levels.fxml"));
-        try {
-            Main.setRoot(loader.load());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Main.toMainMenu();
     }
 
 }
