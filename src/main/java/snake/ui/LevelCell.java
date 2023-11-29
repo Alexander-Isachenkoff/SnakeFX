@@ -16,8 +16,10 @@ public class LevelCell extends AnchorPane {
     private final LevelData levelData;
     @FXML
     private Label levelNameLabel;
+    @FXML
+    private Label bestScoreValueLabel;
 
-    public LevelCell(String title, LevelData levelData) {
+    public LevelCell(LevelData levelData) {
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/level_cell.fxml"));
         loader.setController(this);
         loader.setRoot(this);
@@ -35,7 +37,8 @@ public class LevelCell extends AnchorPane {
         AnchorPane.setRightAnchor(levelPane, 0.0);
         AnchorPane.setTopAnchor(levelPane, 0.0);
         AnchorPane.setBottomAnchor(levelPane, 0.0);
-        levelNameLabel.setText(title);
+        levelNameLabel.setText(levelData.getName());
+        bestScoreValueLabel.setText(String.valueOf(levelData.getBestScore()));
     }
 
     @FXML

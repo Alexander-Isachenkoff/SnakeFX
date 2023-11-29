@@ -73,3 +73,13 @@
     -fx-font-family: "Trebuchet MS";
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,1), 2, 0, 0, 0);
 }
+
+.best-score, .best-score-value {
+    -fx-font-family: "Trebuchet MS";
+    -fx-font-size: 14;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,1), 2, 0, 0, 0);
+}
+
+.best-score-value {
+    -fx-font-size: 18;
+}

@@ -4,7 +4,6 @@ import javafx.animation.AnimationTimer;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import snake.FileUtils;
 
 import java.util.*;
 import java.util.function.Consumer;

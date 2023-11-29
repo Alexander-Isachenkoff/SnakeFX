@@ -16,7 +16,7 @@ public class LevelsMenuController {
     @FXML
     private void initialize() {
         List<LevelCell> levelCells = LevelData.load().stream()
-                .map(levelData -> new LevelCell(levelData.getName(), levelData))
+                .map(LevelCell::new)
                 .collect(Collectors.toList());
         levelsPane.getChildren().setAll(levelCells);
     }
