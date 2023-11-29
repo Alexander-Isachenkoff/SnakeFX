@@ -8,13 +8,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 import snake.model.GameModel;
 import snake.model.LevelMap;
 import snake.model.Point;
 import snake.model.Snake;
 import snake.ui.FoodNode;
+import snake.ui.LevelPane;
 import snake.ui.ObstacleNode;
 import snake.ui.SnakeSegmentNode;
 
@@ -29,21 +30,26 @@ public class LevelController {
     private final List<SnakeSegmentNode> snakeNodes = new ArrayList<>();
     private final Map<Point, FoodNode> foodNodes = new HashMap<>();
     private final double GRID_SIZE = 20;
-    private GameModel gameModel;
+    private final GameModel gameModel = new GameModel();
     @FXML
     private Label scoreLabel;
     @FXML
-    private AnchorPane gamePane;
+    private AnchorPane gamePaneWrapper;
+
+    private LevelPane gamePane;
 
     @FXML
     private void initialize() {
-        gameModel = new GameModel(FileUtils.loadXmlObject("data/levels/level 1.xml", LevelMap.class));
+        gameModel.scoreProperty().addListener((observable, oldValue, newValue) -> scoreLabel.setText(newValue.toString()));
+        gameModel.setOnSegmentAdded(this::addSnakeSegment);
+        gameModel.setOnSnakeMove(this::onSnakeMove);
+        gameModel.setOnFoodAdded(this::onFoodAdded);
+        gameModel.setOnFoodRemoved(this::onFoodRemoved);
+        gameModel.setOnGameOver(this::onGameOver);
+    }
 
-        gamePane.setBackground(new Background(new BackgroundImage(FileUtils.loadImage("images/terrain.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-
-        gamePane.setPrefWidth(GRID_SIZE * gameModel.getWidth());
-        gamePane.setPrefHeight(GRID_SIZE * gameModel.getHeight());
-
+    public void initLevel(LevelMap levelMap) {
+        gamePane = new LevelPane(GRID_SIZE, 32, 24);
         gamePane.sceneProperty().addListener((observable, oldValue, newValue) -> {
             newValue.setOnKeyPressed(event -> {
                 switch (event.getCode()) {
@@ -62,14 +68,13 @@ public class LevelController {
                 }
             });
         });
+        gamePaneWrapper.getChildren().setAll(gamePane);
+        AnchorPane.setLeftAnchor(gamePane, 0.0);
+        AnchorPane.setRightAnchor(gamePane, 0.0);
+        AnchorPane.setTopAnchor(gamePane, 0.0);
+        AnchorPane.setBottomAnchor(gamePane, 0.0);
 
-        gameModel.scoreProperty().addListener((observable, oldValue, newValue) -> scoreLabel.setText(newValue.toString()));
-        gameModel.setOnSegmentAdded(this::addSnakeSegment);
-        gameModel.setOnSnakeMove(this::onSnakeMove);
-        gameModel.setOnFoodAdded(this::onFoodAdded);
-        gameModel.setOnFoodRemoved(this::onFoodRemoved);
-        gameModel.setOnGameOver(this::onGameOver);
-
+        gameModel.init(levelMap);
         restart();
     }
 
@@ -97,7 +102,7 @@ public class LevelController {
             throw new RuntimeException(e);
         }
 
-        gamePane.getChildren().add(load);
+        gamePaneWrapper.getChildren().add(load);
         AnchorPane.setTopAnchor(load, 0.0);
         AnchorPane.setBottomAnchor(load, 0.0);
         AnchorPane.setLeftAnchor(load, 0.0);
@@ -107,7 +112,7 @@ public class LevelController {
 
         controller.setOnMenu(this::onMenu);
         controller.setOnRestart(() -> {
-            gamePane.getChildren().remove(load);
+            gamePaneWrapper.getChildren().remove(load);
             restart();
         });
     }

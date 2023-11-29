@@ -19,7 +19,7 @@ public class GameModel {
     private final double speed = 0.2;
     private final int width = 32;
     private final int height = 24;
-    private final Set<Point> obstacles;
+    private final Set<Point> obstacles = new HashSet<>();
     private Snake snake;
     private Consumer<Snake> onSnakeMove;
     private Consumer<Point> onSegmentAdded;
@@ -30,8 +30,7 @@ public class GameModel {
     private long lastTurnTime;
     private long lastFoodTime;
 
-    public GameModel(LevelMap levelMap) {
-        obstacles = new HashSet<>(levelMap.getObstacles());
+    public GameModel() {
         timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -42,6 +41,11 @@ public class GameModel {
                 update(now);
             }
         };
+    }
+
+    public void init(LevelMap levelMap) {
+        obstacles.clear();
+        obstacles.addAll(levelMap.getObstacles());
     }
 
     public int getWidth() {

@@ -2,9 +2,8 @@ package snake.ui;
 
 import javafx.scene.layout.*;
 import snake.FileUtils;
+import snake.model.LevelMap;
 import snake.model.Point;
-
-import java.util.Set;
 
 public class LevelPane extends Pane {
 
@@ -17,8 +16,8 @@ public class LevelPane extends Pane {
         this.setBackground(new Background(new BackgroundImage(FileUtils.loadImage("images/terrain.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
     }
 
-    public void setObstacles(Set<Point> obstacles) {
-        for (Point obstacle : obstacles) {
+    void init(LevelMap levelMap) {
+        for (Point obstacle : levelMap.getObstacles()) {
             ObstacleNode node = new ObstacleNode(gridSize);
             node.setTranslateX(obstacle.getX() * gridSize);
             node.setTranslateY(obstacle.getY() * gridSize);
