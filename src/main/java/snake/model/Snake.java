@@ -9,6 +9,7 @@ public class Snake {
 
     private final List<Point> points = new ArrayList<>();
     private Side direction = Side.TOP;
+    private Side nextDirection = direction;
 
     Snake() {
         points.add(new Point(20, 20));
@@ -22,22 +23,35 @@ public class Snake {
     }
 
     public void turnUp() {
-        direction = Side.TOP;
+        if (direction == Side.BOTTOM) {
+            return;
+        }
+        nextDirection = Side.TOP;
     }
 
     public void turnDown() {
-        direction = Side.BOTTOM;
+        if (direction == Side.TOP) {
+            return;
+        }
+        nextDirection = Side.BOTTOM;
     }
 
     public void turnLeft() {
-        direction = Side.LEFT;
+        if (direction == Side.RIGHT) {
+            return;
+        }
+        nextDirection = Side.LEFT;
     }
 
     public void turnRight() {
-        direction = Side.RIGHT;
+        if (direction == Side.LEFT) {
+            return;
+        }
+        nextDirection = Side.RIGHT;
     }
 
     void move() {
+        direction = nextDirection;
         switch (direction) {
             case TOP:
                 moveUp();
