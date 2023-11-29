@@ -4,18 +4,22 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import snake.model.GameModel;
 import snake.model.LevelMap;
 import snake.ui.LevelPane;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LevelController {
 
     private final double GRID_SIZE = 20;
     private final GameModel gameModel = new GameModel();
     private final LevelPane gamePane = new LevelPane(GRID_SIZE, 32, 24);
+    private final Map<KeyCode, Runnable> keyMap = new HashMap<>();
     @FXML
     private Label scoreLabel;
     @FXML
@@ -35,19 +39,9 @@ public class LevelController {
                 return;
             }
             scene.setOnKeyPressed(event -> {
-                switch (event.getCode()) {
-                    case UP:
-                        gameModel.getSnake().turnUp();
-                        break;
-                    case DOWN:
-                        gameModel.getSnake().turnDown();
-                        break;
-                    case LEFT:
-                        gameModel.getSnake().turnLeft();
-                        break;
-                    case RIGHT:
-                        gameModel.getSnake().turnRight();
-                        break;
+                Runnable runnable = keyMap.get(event.getCode());
+                if (runnable != null) {
+                    runnable.run();
                 }
             });
         });
@@ -56,6 +50,20 @@ public class LevelController {
         AnchorPane.setRightAnchor(gamePane, 0.0);
         AnchorPane.setTopAnchor(gamePane, 0.0);
         AnchorPane.setBottomAnchor(gamePane, 0.0);
+
+        initKeys();
+    }
+
+    private void initKeys() {
+        keyMap.put(KeyCode.UP, () -> gameModel.getSnake().turnUp());
+        keyMap.put(KeyCode.DOWN, () -> gameModel.getSnake().turnDown());
+        keyMap.put(KeyCode.LEFT, () -> gameModel.getSnake().turnLeft());
+        keyMap.put(KeyCode.RIGHT, () -> gameModel.getSnake().turnRight());
+        keyMap.put(KeyCode.W, () -> gameModel.getSnake().turnUp());
+        keyMap.put(KeyCode.S, () -> gameModel.getSnake().turnDown());
+        keyMap.put(KeyCode.A, () -> gameModel.getSnake().turnLeft());
+        keyMap.put(KeyCode.D, () -> gameModel.getSnake().turnRight());
+        keyMap.put(KeyCode.R, this::restart);
     }
 
     public void initLevel(LevelMap levelMap) {
