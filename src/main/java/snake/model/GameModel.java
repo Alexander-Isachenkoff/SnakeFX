@@ -80,6 +80,10 @@ public class GameModel {
         timer.start();
     }
 
+    public void stop() {
+        timer.stop();
+    }
+
     private void update(long now) {
         if (now - lastTurnTime > speed * 1e9) {
             lastTurnTime = now;
