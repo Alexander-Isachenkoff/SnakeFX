@@ -37,7 +37,7 @@
 }
 
 .game-pane {
-    -fx-background-color: #333;
+    //-fx-background-color: #333;
     -fx-border-color: black;
     -fx-border-width: 3;
     -fx-border-insets: -3;

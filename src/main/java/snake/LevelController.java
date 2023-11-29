@@ -5,15 +5,17 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.*;
 import javafx.util.Duration;
 import snake.model.GameModel;
+import snake.model.LevelMap;
+import snake.model.Point;
 import snake.model.Snake;
 import snake.ui.FoodNode;
+import snake.ui.ObstacleNode;
 import snake.ui.SnakeSegmentNode;
 
 import java.io.IOException;
@@ -24,11 +26,10 @@ import java.util.Map;
 
 public class LevelController {
 
-    private final GameModel gameModel = new GameModel();
     private final List<SnakeSegmentNode> snakeNodes = new ArrayList<>();
-    private final Map<Point2D, FoodNode> foodNodes = new HashMap<>();
+    private final Map<Point, FoodNode> foodNodes = new HashMap<>();
     private final double GRID_SIZE = 20;
-
+    private GameModel gameModel;
     @FXML
     private Label scoreLabel;
     @FXML
@@ -36,6 +37,10 @@ public class LevelController {
 
     @FXML
     private void initialize() {
+        gameModel = new GameModel(FileUtils.loadXmlObject("data/levels/level 1.xml", LevelMap.class));
+
+        gamePane.setBackground(new Background(new BackgroundImage(FileUtils.loadImage("images/terrain.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+
         gamePane.setPrefWidth(GRID_SIZE * gameModel.getWidth());
         gamePane.setPrefHeight(GRID_SIZE * gameModel.getHeight());
 
@@ -69,11 +74,17 @@ public class LevelController {
     }
 
     private void restart() {
-        gamePane.getChildren().removeAll(snakeNodes);
+        gamePane.getChildren().clear();
         snakeNodes.clear();
         gameModel.restart();
-        for (Point2D point : gameModel.getSnake().getPoints()) {
+        for (Point point : gameModel.getSnake().getPoints()) {
             addSnakeSegment(point);
+        }
+        for (Point obstacle : gameModel.getObstacles()) {
+            ObstacleNode node = new ObstacleNode(GRID_SIZE);
+            node.setTranslateX(obstacle.getX() * GRID_SIZE);
+            node.setTranslateY(obstacle.getY() * GRID_SIZE);
+            gamePane.getChildren().add(node);
         }
     }
 
@@ -101,7 +112,7 @@ public class LevelController {
         });
     }
 
-    private void addSnakeSegment(Point2D point) {
+    private void addSnakeSegment(Point point) {
         SnakeSegmentNode segmentNode = new SnakeSegmentNode(GRID_SIZE);
         segmentNode.setTranslateX(point.getX() * GRID_SIZE);
         segmentNode.setTranslateY(point.getY() * GRID_SIZE);
@@ -114,15 +125,15 @@ public class LevelController {
             Node node = snakeNodes.get(i);
             TranslateTransition tt = new TranslateTransition(Duration.seconds(gameModel.getSpeed()), node);
             tt.setInterpolator(Interpolator.LINEAR);
-            Point2D point = snake.getPoints().get(i);
+            Point point = snake.getPoints().get(i);
             tt.setToX(point.getX() * GRID_SIZE);
             tt.setToY(point.getY() * GRID_SIZE);
             tt.play();
         }
     }
 
-    private void onFoodAdded(Point2D foodPoint) {
-        FoodNode foodNode = new FoodNode(GRID_SIZE);
+    private void onFoodAdded(Point foodPoint) {
+        FoodNode foodNode = FoodNode.random(GRID_SIZE);
         foodNode.setTranslateX(foodPoint.getX() * GRID_SIZE);
         foodNode.setTranslateY(foodPoint.getY() * GRID_SIZE);
         foodNode.setScaleX(0);
@@ -135,7 +146,7 @@ public class LevelController {
         st.play();
     }
 
-    private void onFoodRemoved(Point2D foodPoint) {
+    private void onFoodRemoved(Point foodPoint) {
         Node node = foodNodes.remove(foodPoint);
         ScaleTransition st = new ScaleTransition(Duration.millis(200), node);
         st.setToX(0);

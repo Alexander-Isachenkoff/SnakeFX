@@ -1,6 +1,5 @@
 package snake.model;
 
-import javafx.geometry.Point2D;
 import javafx.geometry.Side;
 
 import java.util.ArrayList;
@@ -8,17 +7,17 @@ import java.util.List;
 
 public class Snake {
 
-    private final List<Point2D> points = new ArrayList<>();
+    private final List<Point> points = new ArrayList<>();
     private Side direction = Side.TOP;
 
     Snake() {
-        points.add(new Point2D(20, 20));
-        points.add(new Point2D(20, 21));
-        points.add(new Point2D(20, 22));
-        points.add(new Point2D(20, 23));
+        points.add(new Point(20, 20));
+        points.add(new Point(20, 21));
+        points.add(new Point(20, 22));
+        points.add(new Point(20, 23));
     }
 
-    public List<Point2D> getPoints() {
+    public List<Point> getPoints() {
         return points;
     }
 
@@ -71,31 +70,39 @@ public class Snake {
         move(1, 0);
     }
 
-    private void move(double x, double y) {
+    private void move(int x, int y) {
         points.remove(points.size() - 1);
-        Point2D head = getHead();
-        points.add(0, new Point2D(head.getX() + x, head.getY() + y));
+        Point head = getHead();
+        points.add(0, new Point(head.getX() + x, head.getY() + y));
     }
 
-    Point2D addSegment() {
-        Point2D last = points.get(points.size() - 1);
-        Point2D preLast = points.get(points.size() - 2);
+    Point addSegment() {
+        Point last = points.get(points.size() - 1);
+        Point preLast = points.get(points.size() - 2);
         int x = 0, y = 0;
         if (last.getX() == preLast.getX()) {
-            x = (int) last.getX();
-            y = (int) (last.getY() + last.getY() - preLast.getY());
+            x = last.getX();
+            y = last.getY() + last.getY() - preLast.getY();
         }
         if (last.getY() == preLast.getY()) {
-            y = (int) last.getY();
-            x = (int) (last.getX() + last.getX() - preLast.getX());
+            y = last.getY();
+            x = last.getX() + last.getX() - preLast.getX();
         }
-        Point2D newSegment = new Point2D(x, y);
+        Point newSegment = new Point(x, y);
         points.add(newSegment);
         return newSegment;
     }
 
-    Point2D getHead() {
+    Point getHead() {
         return points.get(0);
+    }
+
+    boolean intersectsSelf() {
+        Point head = getHead();
+        return getPoints().stream()
+                .filter(point -> point != head)
+                .filter(point -> point.getX() == head.getX())
+                .anyMatch(point -> point.getY() == head.getY());
     }
 
 }
