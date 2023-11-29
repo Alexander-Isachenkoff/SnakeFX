@@ -7,7 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
 import snake.FileUtils;
-import snake.model.LevelMap;
+import snake.model.LevelData;
 import snake.model.Point;
 import snake.model.Snake;
 
@@ -29,8 +29,8 @@ public class LevelPane extends Pane {
         this.setBackground(new Background(new BackgroundImage(FileUtils.loadImage("images/terrain.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
     }
 
-    public void init(LevelMap levelMap) {
-        for (Point obstacle : levelMap.getObstacles()) {
+    public void init(LevelData levelData) {
+        for (Point obstacle : levelData.getObstacles()) {
             ObstacleNode node = new ObstacleNode(gridSize);
             node.setTranslateX(obstacle.getX() * gridSize);
             node.setTranslateY(obstacle.getY() * gridSize);

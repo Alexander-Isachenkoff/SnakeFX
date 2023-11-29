@@ -7,17 +7,17 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import snake.LevelController;
 import snake.Main;
-import snake.model.LevelMap;
+import snake.model.LevelData;
 
 import java.io.IOException;
 
 public class LevelCell extends AnchorPane {
 
-    private final LevelMap levelMap;
+    private final LevelData levelData;
     @FXML
     private Label levelNameLabel;
 
-    public LevelCell(String title, LevelMap levelMap) {
+    public LevelCell(String title, LevelData levelData) {
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/level_cell.fxml"));
         loader.setController(this);
         loader.setRoot(this);
@@ -28,8 +28,8 @@ public class LevelCell extends AnchorPane {
         }
 
         LevelPane levelPane = new LevelPane(6, 32, 24);
-        this.levelMap = levelMap;
-        levelPane.init(levelMap);
+        this.levelData = levelData;
+        levelPane.init(levelData);
         getChildren().add(0, levelPane);
         AnchorPane.setLeftAnchor(levelPane, 0.0);
         AnchorPane.setRightAnchor(levelPane, 0.0);
@@ -43,7 +43,7 @@ public class LevelCell extends AnchorPane {
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/main.fxml"));
         Parent load = loader.load();
         LevelController controller = loader.getController();
-        controller.initLevel(levelMap);
+        controller.initLevel(levelData);
         Main.setRoot(load);
     }
 

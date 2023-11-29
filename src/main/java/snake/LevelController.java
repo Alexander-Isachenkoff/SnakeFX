@@ -7,7 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import snake.model.GameModel;
-import snake.model.LevelMap;
+import snake.model.LevelData;
 import snake.ui.LevelPane;
 
 import java.io.IOException;
@@ -21,6 +21,8 @@ public class LevelController {
     private final LevelPane gamePane = new LevelPane(GRID_SIZE, 32, 24);
     private final Map<KeyCode, Runnable> keyMap = new HashMap<>();
     @FXML
+    private Label recordLabel;
+    @FXML
     private Label scoreLabel;
     @FXML
     private AnchorPane gamePaneWrapper;
@@ -28,6 +30,7 @@ public class LevelController {
     @FXML
     private void initialize() {
         gameModel.scoreProperty().addListener((observable, oldValue, newValue) -> scoreLabel.setText(newValue.toString()));
+        gameModel.bestScoreProperty().addListener((observable, oldValue, newValue) -> recordLabel.setText(newValue.toString()));
         gameModel.setOnSegmentAdded(gamePane::addSnakeSegment);
         gameModel.setOnSnakeMove(snake -> gamePane.moveSnake(snake, gameModel.getSpeed()));
         gameModel.setOnFoodAdded(gamePane::addFood);
@@ -66,9 +69,9 @@ public class LevelController {
         keyMap.put(KeyCode.R, this::restart);
     }
 
-    public void initLevel(LevelMap levelMap) {
-        gameModel.init(levelMap);
-        gamePane.init(levelMap);
+    public void initLevel(LevelData levelData) {
+        gameModel.init(levelData);
+        gamePane.init(levelData);
         restart();
     }
 

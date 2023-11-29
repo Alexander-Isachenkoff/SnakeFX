@@ -4,6 +4,7 @@ import javafx.animation.AnimationTimer;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import snake.FileUtils;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -14,7 +15,7 @@ public class GameModel {
     private final Set<Point> foodSet = new HashSet<>();
     private final Random random = new Random();
     private final IntegerProperty score = new SimpleIntegerProperty(-1);
-    private final IntegerProperty record = new SimpleIntegerProperty(-1);
+    private final IntegerProperty bestScore = new SimpleIntegerProperty(-1);
     private final AnimationTimer timer;
     private final double speed = 0.2;
     private final int width = 32;
@@ -29,8 +30,16 @@ public class GameModel {
     private long lastUpdateTime;
     private long lastTurnTime;
     private long lastFoodTime;
+    private LevelData levelData;
 
     public GameModel() {
+        score.addListener((observable, oldValue, newValue) -> {
+            if (newValue.intValue() > bestScore.get()) {
+                bestScore.set(newValue.intValue());
+                levelData.setBestScore(bestScore.get());
+                levelData.save();
+            }
+        });
         timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -43,9 +52,11 @@ public class GameModel {
         };
     }
 
-    public void init(LevelMap levelMap) {
+    public void init(LevelData levelData) {
+        this.levelData = levelData;
+        bestScore.set(levelData.getBestScore());
         obstacles.clear();
-        obstacles.addAll(levelMap.getObstacles());
+        obstacles.addAll(levelData.getObstacles());
     }
 
     public int getWidth() {
@@ -179,8 +190,8 @@ public class GameModel {
         return score;
     }
 
-    public ReadOnlyIntegerProperty recordProperty() {
-        return record;
+    public ReadOnlyIntegerProperty bestScoreProperty() {
+        return bestScore;
     }
 
 }
