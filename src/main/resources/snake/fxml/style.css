@@ -84,3 +84,15 @@
 .best-score-value {
     -fx-font-size: 18;
 }
+
+.title-label .text {
+    -fx-font-smoothing-type: GRAY;
+    -fx-font-family: "Trebuchet MS";
+    -fx-font-size: 72;
+    -fx-font-weight: bold;
+    -fx-fill: LIMEGREEN;
+    -fx-stroke: BLACK;
+    -fx-stroke-width: 2;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,1), 5, 0, 5, 5);
+}
+
