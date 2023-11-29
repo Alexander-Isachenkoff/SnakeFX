@@ -120,8 +120,8 @@ public class GameModel {
 
     private void spawnFood() {
         List<Point2D> availablePoints = new ArrayList<>();
-        for (int i = 0; i <= width; i++) {
-            for (int j = 0; j <= height; j++) {
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
                 int x = i;
                 int y = j;
                 if (foodSet.stream().noneMatch(point2D -> point2D.getX() == x && point2D.getY() == y)) {
