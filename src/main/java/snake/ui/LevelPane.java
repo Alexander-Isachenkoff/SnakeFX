@@ -4,7 +4,10 @@ import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.Node;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import snake.FileUtils;
 import snake.model.LevelData;
@@ -13,18 +16,28 @@ import snake.model.Snake;
 
 import java.util.*;
 
-public class LevelPane extends Pane {
+public class LevelPane extends StackPane {
 
     private final double gridSize;
     private final Map<Point, ObstacleNode> obstacles = new HashMap<>();
     private final Map<Point, FoodNode> foodNodes = new HashMap<>();
     private final List<SnakeSegmentNode> snakeNodes = new ArrayList<>();
+    private final Pane obstaclesPane = new Pane();
+    private final Pane snakePane = new Pane();
+    private final Pane foodPane = new Pane();
 
     public LevelPane(double gridSize, int width, int height) {
+        this.getChildren().addAll(obstaclesPane, foodPane, snakePane);
         this.gridSize = gridSize;
         this.setPrefWidth(gridSize * width);
         this.setPrefHeight(gridSize * height);
         this.setBackground(new Background(new BackgroundImage(FileUtils.loadImage("images/terrain.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+
+        DropShadow effect = new DropShadow(BlurType.THREE_PASS_BOX, Color.BLACK, 5, 0, 2, 2);
+        effect.setInput(new DropShadow(BlurType.THREE_PASS_BOX, Color.GRAY, 0, 0, 0, 5));
+        obstaclesPane.setEffect(effect);
+
+        foodPane.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.BLACK, 5, 0, 0, 0));
     }
 
     public void init(LevelData levelData) {
@@ -45,17 +58,27 @@ public class LevelPane extends Pane {
         ObstacleNode node = new ObstacleNode(gridSize);
         node.setTranslateX(point.getX() * gridSize);
         node.setTranslateY(point.getY() * gridSize);
-        getChildren().add(0, node);
+        node.setScaleX(1.5);
+        node.setScaleY(1.5);
+        obstaclesPane.getChildren().add(0, node);
         obstacles.put(point, node);
+        ScaleTransition st = new ScaleTransition(Duration.millis(100), node);
+        st.setToX(1);
+        st.setToY(1);
+        st.play();
     }
 
     public void removeObstacle(Point point) {
         ObstacleNode node = obstacles.remove(point);
-        getChildren().remove(node);
+        ScaleTransition st = new ScaleTransition(Duration.millis(100), node);
+        st.setToX(0);
+        st.setToY(0);
+        st.setOnFinished(event -> obstaclesPane.getChildren().remove(node));
+        st.play();
     }
 
     public void clearObstacles() {
-        getChildren().removeAll(obstacles.values());
+        obstaclesPane.getChildren().removeAll(obstacles.values());
         obstacles.clear();
     }
 
@@ -65,7 +88,7 @@ public class LevelPane extends Pane {
         foodNode.setTranslateY(foodPoint.getY() * gridSize);
         foodNode.setScaleX(0);
         foodNode.setScaleY(0);
-        getChildren().add(0, foodNode);
+        foodPane.getChildren().add(0, foodNode);
         foodNodes.put(foodPoint, foodNode);
         ScaleTransition st = new ScaleTransition(Duration.millis(500), foodNode);
         st.setToX(1);
@@ -78,12 +101,12 @@ public class LevelPane extends Pane {
         ScaleTransition st = new ScaleTransition(Duration.millis(200), node);
         st.setToX(0);
         st.setToY(0);
-        st.setOnFinished(event -> getChildren().remove(node));
+        st.setOnFinished(event -> foodPane.getChildren().remove(node));
         st.play();
     }
 
     public void clearFood() {
-        getChildren().removeAll(foodNodes.values());
+        foodPane.getChildren().removeAll(foodNodes.values());
         foodNodes.clear();
     }
 
@@ -93,7 +116,7 @@ public class LevelPane extends Pane {
     }
 
     private void clearSnake() {
-        getChildren().removeAll(snakeNodes);
+        snakePane.getChildren().removeAll(snakeNodes);
         snakeNodes.clear();
     }
 
@@ -101,7 +124,7 @@ public class LevelPane extends Pane {
         SnakeSegmentNode segmentNode = new SnakeSegmentNode(gridSize);
         segmentNode.setTranslateX(point.getX() * gridSize);
         segmentNode.setTranslateY(point.getY() * gridSize);
-        getChildren().add(segmentNode);
+        snakePane.getChildren().add(segmentNode);
         snakeNodes.add(segmentNode);
     }
 

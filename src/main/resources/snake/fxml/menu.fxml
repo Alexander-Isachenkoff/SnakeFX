@@ -6,7 +6,7 @@
 <?import javafx.scene.effect.Reflection?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="580.0" prefWidth="720.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="snake.MenuController">
+<VBox prefHeight="600.0" prefWidth="900.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="snake.MenuController">
    <children>
       <VBox alignment="CENTER" prefHeight="240.0" prefWidth="720.0">
          <children>

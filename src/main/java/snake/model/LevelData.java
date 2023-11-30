@@ -12,9 +12,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 @XmlRootElement
@@ -24,28 +23,28 @@ import java.util.stream.Stream;
 public class LevelData {
 
     public static final String LEVELS_DIR = "data/levels/";
-
+    @XmlElement(name = "obstacle")
+    private final Set<Point> obstacles = new HashSet<>();
     @XmlAttribute
     private String name;
     @XmlAttribute
     @Setter
     private int bestScore;
-    @XmlElement(name = "obstacle")
-    private final Set<Point> obstacles = new HashSet<>();
 
     public LevelData(String name, Collection<Point> obstacles) {
         this.name = name;
         this.obstacles.addAll(obstacles);
     }
 
-    public static List<LevelData> load() {
-        try (Stream<Path> stream = Files.list(Paths.get(LEVELS_DIR))) {
-            return stream
-                    .map(path -> FileUtils.loadXmlObject(path.toString(), LevelData.class))
-                    .collect(Collectors.toList());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public static void loadAllAsync(Consumer<LevelData> onLoad) {
+        new Thread(() -> {
+            try (Stream<Path> stream = Files.list(Paths.get(LEVELS_DIR))) {
+                stream.map(path -> FileUtils.loadXmlObject(path.toString(), LevelData.class))
+                        .forEach(onLoad);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
     }
 
     public void save() {

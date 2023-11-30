@@ -5,6 +5,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -43,14 +44,15 @@ public class EditorController {
         levelPane.setOnMouseMoved(this::moveSelector);
         levelPane.setOnMousePressed(this::onMouseEvent);
         levelPane.setOnMouseDragged(this::onMouseEvent);
+        levelPane.getChildren().add(new Pane(selector));
     }
 
     private void moveSelector(MouseEvent event) {
         if (isInBounds(event, levelPane)) {
             double x = Math.floor(event.getX() / GRID_SIZE) * GRID_SIZE;
             double y = Math.floor(event.getY() / GRID_SIZE) * GRID_SIZE;
-            selector.setX(x);
-            selector.setY(y);
+            selector.setTranslateX(x);
+            selector.setTranslateY(y);
         }
     }
 
