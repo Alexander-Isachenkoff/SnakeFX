@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<levelData name="New Level" bestScore="8">
+    <obstacle x="5" y="2"/>
+    <obstacle x="4" y="2"/>
+    <obstacle x="29" y="2"/>
+    <obstacle x="29" y="3"/>
+    <obstacle x="3" y="2"/>
+    <obstacle x="29" y="4"/>
+    <obstacle x="29" y="5"/>
+    <obstacle x="28" y="2"/>
+    <obstacle x="2" y="2"/>
+    <obstacle x="2" y="3"/>
+    <obstacle x="2" y="4"/>
+    <obstacle x="2" y="5"/>
+    <obstacle x="27" y="2"/>
+    <obstacle x="26" y="2"/>
+</levelData>

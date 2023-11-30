@@ -54,6 +54,11 @@ public class LevelPane extends Pane {
         getChildren().remove(node);
     }
 
+    public void clearObstacles() {
+        getChildren().removeAll(obstacles.values());
+        obstacles.clear();
+    }
+
     public void addFood(Point foodPoint) {
         FoodNode foodNode = FoodNode.random(gridSize);
         foodNode.setTranslateX(foodPoint.getX() * gridSize);

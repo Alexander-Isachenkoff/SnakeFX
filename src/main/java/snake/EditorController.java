@@ -87,4 +87,9 @@ public class EditorController {
         levelData.save();
     }
 
+    @FXML
+    private void onClear() {
+        levelPane.clearObstacles();
+    }
+
 }
