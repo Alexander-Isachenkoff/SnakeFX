@@ -1,10 +1,16 @@
 package snake.ui;
 
+import javafx.animation.ScaleTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 import snake.LevelController;
 import snake.Main;
 import snake.model.LevelData;
@@ -18,6 +24,8 @@ public class LevelCell extends AnchorPane {
     private Label levelNameLabel;
     @FXML
     private Label bestScoreValueLabel;
+    @FXML
+    private Button playButton;
 
     public LevelCell(LevelData levelData) {
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/level_cell.fxml"));
@@ -39,6 +47,24 @@ public class LevelCell extends AnchorPane {
         AnchorPane.setBottomAnchor(levelPane, 0.0);
         levelNameLabel.setText(levelData.getName());
         bestScoreValueLabel.setText(String.valueOf(levelData.getBestScore()));
+
+        MenuItem deleteMenuItem = new MenuItem("Удалить");
+        deleteMenuItem.setOnAction(event -> delete());
+        ContextMenu contextMenu = new ContextMenu(deleteMenuItem);
+        setOnContextMenuRequested(event -> {
+            contextMenu.show(this, event.getScreenX(), event.getScreenY());
+        });
+    }
+
+    private void delete() {
+        this.levelData.delete();
+        ScaleTransition st = new ScaleTransition(Duration.millis(200), this);
+        st.setToX(0);
+        st.setToY(0);
+        st.setOnFinished(event -> {
+            ((Pane) this.getParent()).getChildren().remove(this);
+        });
+        st.play();
     }
 
     @FXML

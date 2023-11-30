@@ -108,7 +108,7 @@ public class LevelController {
     @FXML
     private void onMenu() {
         gameModel.stop();
-        Main.toMainMenu();
+        Main.toLevels();
     }
 
 }

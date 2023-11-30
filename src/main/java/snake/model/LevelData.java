@@ -51,4 +51,12 @@ public class LevelData {
         FileUtils.saveXmlObject(this, LEVELS_DIR + getName() + ".xml");
     }
 
+    public void delete() {
+        try {
+            Files.delete(Paths.get(LEVELS_DIR + getName() + ".xml"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
