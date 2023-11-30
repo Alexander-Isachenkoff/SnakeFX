@@ -11,14 +11,12 @@ import snake.model.LevelData;
 import snake.model.Point;
 import snake.model.Snake;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LevelPane extends Pane {
 
     private final double gridSize;
+    private final Map<Point, ObstacleNode> obstacles = new HashMap<>();
     private final Map<Point, FoodNode> foodNodes = new HashMap<>();
     private final List<SnakeSegmentNode> snakeNodes = new ArrayList<>();
 
@@ -31,11 +29,29 @@ public class LevelPane extends Pane {
 
     public void init(LevelData levelData) {
         for (Point obstacle : levelData.getObstacles()) {
-            ObstacleNode node = new ObstacleNode(gridSize);
-            node.setTranslateX(obstacle.getX() * gridSize);
-            node.setTranslateY(obstacle.getY() * gridSize);
-            getChildren().add(node);
+            addObstacle(obstacle);
         }
+    }
+
+    public boolean hasObstacle(Point point) {
+        return obstacles.containsKey(point);
+    }
+
+    public Set<Point> getObstacles() {
+        return obstacles.keySet();
+    }
+
+    public void addObstacle(Point point) {
+        ObstacleNode node = new ObstacleNode(gridSize);
+        node.setTranslateX(point.getX() * gridSize);
+        node.setTranslateY(point.getY() * gridSize);
+        getChildren().add(0, node);
+        obstacles.put(point, node);
+    }
+
+    public void removeObstacle(Point point) {
+        ObstacleNode node = obstacles.remove(point);
+        getChildren().remove(node);
     }
 
     public void addFood(Point foodPoint) {

@@ -1,6 +1,7 @@
 package snake.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import snake.FileUtils;
 
@@ -9,6 +10,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,6 +20,7 @@ import java.util.stream.Stream;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @Getter
+@NoArgsConstructor
 public class LevelData {
 
     public static final String LEVELS_DIR = "data/levels/";
@@ -27,7 +31,12 @@ public class LevelData {
     @Setter
     private int bestScore;
     @XmlElement(name = "obstacle")
-    private Set<Point> obstacles;
+    private final Set<Point> obstacles = new HashSet<>();
+
+    public LevelData(String name, Collection<Point> obstacles) {
+        this.name = name;
+        this.obstacles.addAll(obstacles);
+    }
 
     public static List<LevelData> load() {
         try (Stream<Path> stream = Files.list(Paths.get(LEVELS_DIR))) {

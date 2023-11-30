@@ -96,3 +96,13 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,1), 5, 0, 5, 5);
 }
 
+.text-field {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: WHITE;
+    -fx-border-width: 0 0 1 0;
+    -fx-text-fill: #fafafa;
+    -fx-highlight-fill: GRAY;
+    -fx-font-size: 18;
+    -fx-font-family: "Trebuchet MS";
+}

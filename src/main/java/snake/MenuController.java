@@ -15,7 +15,7 @@ public class MenuController {
 
     @FXML
     void onLevelEditor() {
-
+        Main.toLevelEditor();
     }
 
     @FXML
