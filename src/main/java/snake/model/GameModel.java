@@ -70,10 +70,6 @@ public class GameModel {
         return snake;
     }
 
-    public Set<Point> getObstacles() {
-        return obstacles;
-    }
-
     public double getSpeed() {
         return speed;
     }
@@ -149,14 +145,15 @@ public class GameModel {
 
     private void spawnFood() {
         List<Point> availablePoints = new ArrayList<>();
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                int x = i;
-                int y = j;
-                if (foodSet.stream().noneMatch(point2D -> point2D.getX() == x && point2D.getY() == y)) {
-                    if (snake.getPoints().stream().noneMatch(point2D -> point2D.getX() == x && point2D.getY() == y)) {
-                        availablePoints.add(new Point(x, y));
-                    }
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Set<Point> objects = new HashSet<>();
+                objects.addAll(foodSet);
+                objects.addAll(snake.getPoints());
+                objects.addAll(obstacles);
+                Point point = new Point(x, y);
+                if (!objects.contains(point)) {
+                    availablePoints.add(point);
                 }
             }
         }
