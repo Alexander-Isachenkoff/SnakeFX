@@ -38,6 +38,7 @@ public class LevelPane extends StackPane {
         obstaclesPane.setEffect(effect);
 
         foodPane.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.BLACK, 5, 0, 0, 0));
+        snakePane.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.BLACK, 5, 0, 0, 0));
     }
 
     public void init(LevelData levelData) {
@@ -121,7 +122,7 @@ public class LevelPane extends StackPane {
     }
 
     public void addSnakeSegment(Point point) {
-        SnakeSegmentNode segmentNode = new SnakeSegmentNode(gridSize);
+        SnakeSegmentNode segmentNode = new SnakeSegmentNode(gridSize, snakeNodes.isEmpty());
         segmentNode.setTranslateX(point.getX() * gridSize);
         segmentNode.setTranslateY(point.getY() * gridSize);
         snakePane.getChildren().add(segmentNode);
