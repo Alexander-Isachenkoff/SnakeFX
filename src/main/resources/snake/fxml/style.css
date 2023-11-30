@@ -106,3 +106,8 @@
     -fx-font-size: 18;
     -fx-font-family: "Trebuchet MS";
 }
+
+.scroll-pane, .scroll-pane .viewport {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
