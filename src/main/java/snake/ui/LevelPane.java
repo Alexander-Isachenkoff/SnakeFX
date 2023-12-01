@@ -14,14 +14,15 @@ import snake.model.LevelData;
 import snake.model.Point;
 import snake.model.Snake;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class LevelPane extends StackPane {
 
     private final double gridSize;
-    private final Map<Point, ObstacleNode> obstacles = new HashMap<>();
-    private final Map<Point, FoodNode> foodNodes = new HashMap<>();
-    private final List<SnakeSegmentNode> snakeNodes = new ArrayList<>();
+    private final List<GameNode> gameNodes = new ArrayList<>();
     private final Pane obstaclesPane = new Pane();
     private final Pane snakePane = new Pane();
     private final Pane foodPane = new Pane();
@@ -33,7 +34,7 @@ public class LevelPane extends StackPane {
         this.setPrefHeight(gridSize * height);
         this.setBackground(new Background(new BackgroundImage(FileUtils.loadImage("images/terrain.png"), BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
 
-        DropShadow effect = new DropShadow(BlurType.THREE_PASS_BOX, Color.BLACK, 5, 0, 2, 2);
+        DropShadow effect = new DropShadow(BlurType.THREE_PASS_BOX, Color.BLACK, 5, 0, 2, 0);
         effect.setInput(new DropShadow(BlurType.THREE_PASS_BOX, Color.GRAY, 0, 0, 0, 5));
         obstaclesPane.setEffect(effect);
 
@@ -48,11 +49,17 @@ public class LevelPane extends StackPane {
     }
 
     public boolean hasObstacle(Point point) {
-        return obstacles.containsKey(point);
+        return getNode(ObstacleNode.class, point) != null;
+    }
+
+    public boolean hasSnakeSegment(Point point) {
+        return getNode(SnakeSegmentNode.class, point) != null;
     }
 
     public Set<Point> getObstacles() {
-        return obstacles.keySet();
+        return getNodes(ObstacleNode.class).stream()
+                .map(GameNode::getPoint)
+                .collect(Collectors.toSet());
     }
 
     public void addObstacle(Point point) {
@@ -62,7 +69,8 @@ public class LevelPane extends StackPane {
         node.setScaleX(1.5);
         node.setScaleY(1.5);
         obstaclesPane.getChildren().add(0, node);
-        obstacles.put(point, node);
+        node.setPoint(point);
+        gameNodes.add(node);
         ScaleTransition st = new ScaleTransition(Duration.millis(100), node);
         st.setToX(1);
         st.setToY(1);
@@ -70,7 +78,8 @@ public class LevelPane extends StackPane {
     }
 
     public void removeObstacle(Point point) {
-        ObstacleNode node = obstacles.remove(point);
+        ObstacleNode node = getNode(ObstacleNode.class, point);
+        gameNodes.remove(node);
         ScaleTransition st = new ScaleTransition(Duration.millis(100), node);
         st.setToX(0);
         st.setToY(0);
@@ -79,8 +88,7 @@ public class LevelPane extends StackPane {
     }
 
     public void clearObstacles() {
-        obstaclesPane.getChildren().removeAll(obstacles.values());
-        obstacles.clear();
+        removeAll(ObstacleNode.class);
     }
 
     public void addFood(Point foodPoint) {
@@ -90,25 +98,46 @@ public class LevelPane extends StackPane {
         foodNode.setScaleX(0);
         foodNode.setScaleY(0);
         foodPane.getChildren().add(0, foodNode);
-        foodNodes.put(foodPoint, foodNode);
+        foodNode.setPoint(foodPoint);
+        gameNodes.add(foodNode);
         ScaleTransition st = new ScaleTransition(Duration.millis(500), foodNode);
         st.setToX(1);
         st.setToY(1);
         st.play();
     }
 
-    public void removeFood(Point foodPoint) {
-        Node node = foodNodes.remove(foodPoint);
-        ScaleTransition st = new ScaleTransition(Duration.millis(200), node);
+    public void removeFood(Point point) {
+        FoodNode foodNode = getNode(FoodNode.class, point);
+        gameNodes.remove(foodNode);
+        ScaleTransition st = new ScaleTransition(Duration.millis(200), foodNode);
         st.setToX(0);
         st.setToY(0);
-        st.setOnFinished(event -> foodPane.getChildren().remove(node));
+        st.setOnFinished(event -> foodPane.getChildren().remove(foodNode));
         st.play();
     }
 
+    private <T extends GameNode> T getNode(Class<T> type, Point point) {
+        return getNodes(type).stream()
+                .filter(node -> node.getPoint().equals(point))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private <T extends GameNode> List<T> getNodes(Class<T> type) {
+        return gameNodes.stream()
+                .filter(type::isInstance)
+                .map(gameNode -> (T) gameNode)
+                .collect(Collectors.toList());
+    }
+
     public void clearFood() {
-        foodPane.getChildren().removeAll(foodNodes.values());
-        foodNodes.clear();
+        removeAll(FoodNode.class);
+    }
+
+    private <T extends GameNode> void removeAll(Class<T> type) {
+        List<T> nodes = getNodes(type);
+        nodes.forEach(t -> ((Pane) t.getParent()).getChildren().remove(t));
+        gameNodes.removeAll(nodes);
     }
 
     public void initSnake(Snake snake) {
@@ -117,21 +146,26 @@ public class LevelPane extends StackPane {
     }
 
     private void clearSnake() {
-        snakePane.getChildren().removeAll(snakeNodes);
-        snakeNodes.clear();
+        removeAll(SnakeSegmentNode.class);
     }
 
     public void addSnakeSegment(Point point) {
-        SnakeSegmentNode segmentNode = new SnakeSegmentNode(gridSize, snakeNodes.isEmpty());
+        SnakeSegmentNode segmentNode;
+        if (getNodes(SnakeSegmentNode.class).isEmpty()) {
+            segmentNode = SnakeSegmentNode.head(gridSize);
+        } else {
+            segmentNode = SnakeSegmentNode.body(gridSize);
+        }
+        segmentNode.setPoint(point);
         segmentNode.setTranslateX(point.getX() * gridSize);
         segmentNode.setTranslateY(point.getY() * gridSize);
         snakePane.getChildren().add(segmentNode);
-        snakeNodes.add(segmentNode);
+        gameNodes.add(segmentNode);
     }
 
     public void moveSnake(Snake snake, double duration) {
         for (int i = 0; i < snake.getPoints().size(); i++) {
-            Node node = snakeNodes.get(i);
+            Node node = getNodes(SnakeSegmentNode.class).get(i);
             TranslateTransition tt = new TranslateTransition(Duration.seconds(duration), node);
             tt.setInterpolator(Interpolator.LINEAR);
             Point point = snake.getPoints().get(i);

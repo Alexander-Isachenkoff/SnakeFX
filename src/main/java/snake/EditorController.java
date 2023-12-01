@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import snake.model.LevelData;
 import snake.model.Point;
+import snake.model.Snake;
 import snake.ui.LevelPane;
 
 public class EditorController {
@@ -45,6 +46,8 @@ public class EditorController {
         levelPane.setOnMousePressed(this::onMouseEvent);
         levelPane.setOnMouseDragged(this::onMouseEvent);
         levelPane.getChildren().add(new Pane(selector));
+
+        levelPane.initSnake(new Snake());
     }
 
     private void moveSelector(MouseEvent event) {
@@ -65,7 +68,7 @@ public class EditorController {
         int yIndex = (int) Math.floor(event.getY() / GRID_SIZE);
         Point point = new Point(xIndex, yIndex);
         if (event.getButton() == MouseButton.PRIMARY) {
-            if (!levelPane.hasObstacle(point)) {
+            if (!levelPane.hasObstacle(point) && !levelPane.hasSnakeSegment(point)) {
                 levelPane.addObstacle(point);
             }
         }

@@ -11,7 +11,7 @@ public class Snake {
     private Side direction = Side.TOP;
     private Side nextDirection = direction;
 
-    Snake() {
+    public Snake() {
         points.add(new Point(20, 20));
         points.add(new Point(20, 21));
         points.add(new Point(20, 22));
